@@ -292,6 +292,7 @@ main { display:flex; overflow:hidden; height:calc(100vh - var(--header-h)); }
 <div class="modal-overlay" id="player-modal" onclick="handleModalClick(event)">
   <div class="modal-inner" id="modal-inner">
     <button id="modal-close-btn" onclick="closeModal()" title="Close" style="position:absolute;top:12px;right:16px;z-index:10;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);font-size:13px;font-family:var(--font-display);font-weight:600;letter-spacing:0.5px;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:50px;transition:background 0.2s,color 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(255,63,164,0.85)';this.style.color='white';this.style.borderColor='rgba(255,63,164,0.8)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='rgba(255,255,255,0.15)'">&#x2715; Close video &amp; return to browser</button>
+    <button id="modal-fs-btn" onclick="toggleFullscreen()" title="Fullscreen" style="position:absolute;top:12px;left:16px;z-index:10;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);font-size:13px;font-family:var(--font-display);font-weight:600;letter-spacing:0.5px;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:50px;transition:background 0.2s,color 0.2s,border-color 0.2s;" onmouseover="this.style.background='rgba(255,63,164,0.85)';this.style.color='white';this.style.borderColor='rgba(255,63,164,0.8)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.6)';this.style.borderColor='rgba(255,255,255,0.15)'">&#x26F6; Full screen</button>
     <div class="player-stage" id="player-stage"></div>
     <div class="modal-info"></div>
   </div>
@@ -858,6 +859,33 @@ function showAll() {
   document.querySelectorAll('.category-tab').forEach(t => t.classList.toggle('active', t.dataset.category === 'all'));
   render();
 }
+
+// ════════════════════════════════════════
+//  FULLSCREEN
+// ════════════════════════════════════════
+function toggleFullscreen() {
+  const stage = document.getElementById('player-stage');
+  const btn   = document.getElementById('modal-fs-btn');
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    const el = stage.querySelector('iframe') || stage;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    btn.innerHTML = '&#x2715; Exit full screen';
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    btn.innerHTML = '&#x26F6; Full screen';
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('modal-fs-btn');
+  if (btn) btn.innerHTML = document.fullscreenElement ? '&#x2715; Exit full screen' : '&#x26F6; Full screen';
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  const btn = document.getElementById('modal-fs-btn');
+  if (btn) btn.innerHTML = document.webkitFullscreenElement ? '&#x2715; Exit full screen' : '&#x26F6; Full screen';
+});
 
 // ════════════════════════════════════════
 //  KEYBOARD
